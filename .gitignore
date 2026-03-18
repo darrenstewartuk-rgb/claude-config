@@ -1,0 +1,12 @@
+settings.local.json
+cache/
+debug/
+downloads/
+shell-snapshots/
+stats-cache.json
+paste-cache/
+sessions/
+history.jsonl
+file-history/
+chrome/
+backups/
