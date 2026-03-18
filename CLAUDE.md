@@ -57,7 +57,7 @@ Claude will stage, commit, and push all changes in `C:\Users\Darren\.claude\` au
 |---|---|
 | Parts database | `S:\SGMWindows\Customer Care\2026 Parts Lists\DataBaseSearch.xlsm` |
 | Parts list style ref | `C:\Users\Darren\Downloads\Parts_Top10_Report_Mar2026.html` |
-| Report output folder | `C:\Users\Darren\Downloads\` |
+| Report output folder | `S:\SGMWindows\Customer Care\Reports\` |
 
 ---
 

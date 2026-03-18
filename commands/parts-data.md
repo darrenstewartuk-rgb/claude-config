@@ -87,11 +87,11 @@ Generate a styled HTML Top 10 report from SGM parts operations data.
    - Footer: period, source file path, classification "Board Confidential", generated date
    - Data only — no action signal pills, no warning flags on customer names
 
-6. **Save** as `SGM_Parts_Analysis_[DateRange].html` in `C:\Users\Darren\Downloads\`
+6. **Save** as `SGM_Parts_Analysis_[DateRange].html` in `S:\SGMWindows\Customer Care\Reports\`
    - Date range format: `Feb-Mar2026` for full months, `DD-DDMonYYYY` for filtered ranges
 
 7. **Open in Chrome:**
-   - Run `python -m http.server 8765` in background from `C:\Users\Darren\Downloads\`
+   - Run `python -m http.server 8765` in background from `S:\SGMWindows\Customer Care\Reports\`
    - Open with `start "" "http://localhost:8765/<filename>.html"`
    - Use Chrome browser tools to take a screenshot confirming it loaded correctly
 
