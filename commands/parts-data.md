@@ -70,11 +70,8 @@ Generate a styled HTML Top 10 report from SGM parts operations data.
 
 3. **Extract the following data:**
 
-   **KPI summary:**
+   **KPI summary (two cards only):**
    - Total Cost = `sum(tc)` across all rows
-   - Transactions = total row count
-   - Customers Served = count of unique non-empty, non-`-` customer names
-   - Unique Parts = count of unique `(code + '|' + desc)` combinations
    - Unallocated Cost = `sum(tc)` for rows where `cust` is `''`, `'-'`, or `'None'`
 
    **Top 10 parts by cost:** group by description (fall back to code), sum qty and tc, sort by tc desc
@@ -139,13 +136,11 @@ Match its CSS variables, card layout, table structure, and rank badge colours ex
 
 ## Reference output
 
-The report produced on 25 March 2026 for period 06 Feb – 24 Mar 2026:
-- Total Cost: £6,912.41 | Unit 1: £248.26 | Unit 3: £438.56 | Unit 4: £1,123.86 | Unit 5: £2,106.42 | Unit 6: £2,678.18 | Customer Care: £317.12
+Benchmark figures are stored in memory (`memory/parts_report_benchmarks.md`) and updated after each run. Always compare a new run against the most recent benchmark — flag any unit that drops >20% without a known reason.
 
-Earlier reference (18 March 2026, period 06 Feb – 18 Mar 2026, from DataBaseSearch Summary before files were modified):
-- Total Cost: £6,234.35 | Transactions: 436 | Customers: 126 | Unique Parts: 281
-- Unallocated Cost: £1,386.41
-- Top part by cost: Threshold Tray Silver — £268.60
-- Top part by volume: 28mm Glazing Platform — 100 units
-- Top customer: Stratton — £543.39
-- Peak week: 09–13 Feb — £1,302.53
+**Latest benchmark — 25 Mar 2026, period 06 Feb – 24 Mar 2026:**
+- Total Cost: £6,912.41 | Unallocated: £1,556.18 (22.5%)
+- Unit 6: £2,678.18 (38.7%) | Unit 5: £2,106.42 (30.5%) | Unit 4: £1,123.86 (16.3%)
+- Unit 3: £438.56 (6.3%) | Customer Care: £317.12 (4.6%) | Unit 1: £248.26 (3.6%)
+
+**KPI cards shown:** Total Cost and Unallocated Cost only (Transactions, Customers Served, Unique Parts removed).
