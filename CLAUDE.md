@@ -48,6 +48,7 @@ Claude will stage, commit, and push all changes in `C:\Users\Darren\.claude\` au
 | `/parts-data` | `commands/parts-data.md` | Generates SGM Parts Analysis HTML report from DataBaseSearch.xlsm |
 | `/performance-pack-data-extractor` | `commands/performance-pack-data-extractor.md` | Extracts weekly ticket data into styled Excel report |
 | `/excel-editor` | `commands/excel-editor.md` | Formats and edits Excel workbooks |
+| `/context-audit` | `commands/context-audit.md` | Audits Claude Code setup for token waste and context bloat |
 
 ---
 
