@@ -23,7 +23,5 @@ Repo: https://github.com/darrenstewartuk-rgb/claude-config — push with `cd "C:
 
 ## General Preferences
 
-- Keep responses concise and direct
 - No emojis unless requested
-- When generating reports: always validate totals before writing HTML
 - When finished with a report: always open in Chrome via local server (`python -m http.server 8765`)
