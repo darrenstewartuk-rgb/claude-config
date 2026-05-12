@@ -18,6 +18,7 @@ Repo: https://github.com/darrenstewartuk-rgb/claude-config — push with `cd "C:
 | Parts database | `S:\SGMWindows\Customer Care\2026 Parts Lists\DataBaseSearch.xlsm` — do not read directly; use /parts-data skill which reads source xlsx files instead |
 | Parts list style ref | `C:\Users\Darren\Downloads\Parts_Top10_Report_Mar2026.html` |
 | Report output folder | `S:\SGMWindows\Customer Care\Reports\` |
+| PhotoCluster app | `C:\Users\Darren\dist\PhotoCluster.exe` — standalone GUI for visual photo search and grouping. Source: `C:\Users\Darren\photo_cluster_app.py` |
 
 ---
 
