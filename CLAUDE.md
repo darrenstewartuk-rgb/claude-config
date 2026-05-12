@@ -15,7 +15,7 @@ Repo: https://github.com/darrenstewartuk-rgb/claude-config — push with `cd "C:
 
 | Resource | Path |
 |---|---|
-| Parts database | `S:\SGMWindows\Customer Care\2026 Parts Lists\DataBaseSearch.xlsm` |
+| Parts database | `S:\SGMWindows\Customer Care\2026 Parts Lists\DataBaseSearch.xlsm` — do not read directly; use /parts-data skill which reads source xlsx files instead |
 | Parts list style ref | `C:\Users\Darren\Downloads\Parts_Top10_Report_Mar2026.html` |
 | Report output folder | `S:\SGMWindows\Customer Care\Reports\` |
 
