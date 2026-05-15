@@ -191,7 +191,7 @@ Produce a complete, self-contained HTML file using the SGM house style below. Po
 <header>
   <div>
     <h1>[REPORT TITLE]</h1>
-    <p>[SUBTITLE OR PERIOD] &nbsp;|&nbsp; Classification: Board Confidential</p>
+    <p>[SUBTITLE OR PERIOD]</p>
   </div>
   <span class="badge">Capacity Planning</span>
 </header>
@@ -268,7 +268,7 @@ Severity badge classes: badge-high-risk / badge-med-risk for risks; badge-high-o
 </div> -->
 
 <footer>
-  <p>Source: [FILE PATH] &nbsp;|&nbsp; <span class="conf">Board Confidential</span></p>
+  <p>Source: [FILE PATH]</p>
   <p style="margin-top:4px;">Generated: [TODAY'S DATE]</p>
 </footer>
 
