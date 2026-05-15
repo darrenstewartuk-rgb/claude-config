@@ -1,6 +1,6 @@
 # Parts Data Report
 
-Generate a styled HTML Top 10 report from SGM parts operations data.
+Generate a styled HTML Top 10 report from SGM parts operations data, then produce a weekly trend summary.
 
 ---
 
@@ -9,7 +9,7 @@ Generate a styled HTML Top 10 report from SGM parts operations data.
 - **Source folder:** `S:\SGMWindows\Customer Care\2026 Parts Lists\Completed Sheets Here`
 - **Files:** All `Parts List - DD.MM.YY.xlsx` files in that folder
 - **Sheets to read per file:** `Unit 1`, `Unit 3`, `Unit 4`, `Unit 5`, `Unit 6`, `Customercare Office`
-- **Do not** use `DataBaseSearch.xlsm` Summary sheet — Power Query cached values are unreliable when source files have been modified by openpyxl
+- **Do not** use `DataBaseSearch.xlsm` — Power Query cached values are unreliable when source files have been modified by openpyxl
 
 ### Source file column structure (row 1 = headers, data starts row 2):
 | Col | Index (0-based) | Name | Notes |
@@ -93,14 +93,14 @@ Generate a styled HTML Top 10 report from SGM parts operations data.
    - Raise a warning (do not abort) if any discrepancy > £0.01
 
 5. **Generate the HTML** using the SGM house style:
-   - Dark navy header (`#1a3a5c`) with orange accent (`#e8621a`)
    - CSS variables: `--primary:#1a3a5c`, `--accent:#e8621a`, `--light:#f4f7fb`, `--border:#d0d9e8`, `--text:#1e2533`, `--muted:#6b7a99`, `--green:#1a7a4a`
-   - KPI cards row at top — warn card (orange border + value) for Unallocated Cost
+   - Dark navy header with orange accent line below
+   - KPI cards row at top — warn card (orange left border + value) for Unallocated Cost
    - Two-column card grid (`minmax(480px,1fr)`), weekly trend full-width (`grid-column: 1 / -1`) at bottom
    - Gold/silver/bronze rank badges for positions 1–3
    - Inline bar charts for units table (green bars) and volume table (accent/orange bars)
-   - Peak week cell highlighted `style="background:#fffbe6"` with the highest unit that week marked
-   - Footnote on weekly trend table flagging partial weeks with `*` / `†`
+   - Peak week row highlighted `style="background:#fffbe6"` with the highest unit cell marked `.peak-cell`
+   - Footnote on weekly trend table flagging partial weeks with `*` / `†` / `‡`
    - Footer: period, source folder path, classification "Board Confidential", generated date
    - Data only — no action signal pills, no warning flags on customer names
 
@@ -108,29 +108,60 @@ Generate a styled HTML Top 10 report from SGM parts operations data.
    - Date range format: `Feb-Mar2026` for full months, `DD-DDMonYYYY` for filtered ranges
 
 7. **Open in Chrome:**
-   - Run `python -m http.server 8765` in background from `S:\SGMWindows\Customer Care\Reports\`
-   - Open with `start "" "http://localhost:8765/<filename>.html"`
-   - Use Chrome browser tools to take a screenshot confirming it loaded correctly
+   - Start `python -m http.server 8765` in background from `S:\SGMWindows\Customer Care\Reports\`
+   - Open `http://localhost:8765/<filename>.html`
+
+8. **Sense check figures before presenting** — verify the following and report results to the user before declaring the report complete:
+   - Unit totals sum exactly to the Total Cost KPI (diff = £0.00)
+   - Weekly grand total matches Total Cost KPI (allow ±£0.02 for float rounding in displayed values)
+   - Each weekly row total equals the sum of its unit cells
+   - Unallocated % is arithmetically correct (`unalloc / total * 100`)
+   - Compare each unit total against the benchmark in `memory/parts_report_benchmarks.md`; flag any unit that has dropped >20% without a known reason
+   - Customer Care should be consistent week-to-week (it tends not to vary wildly); flag any week where it is unexpectedly zero across the full period
+   - State the sense check results explicitly to the user (pass/flag) before opening Chrome
+
+9. **Generate the Weekly Trend Summary** immediately after saving the main report:
+
+   **Data extraction:**
+   - Glob all `SGM_Parts_Analysis_*.html` in `S:\SGMWindows\Customer Care\Reports\` (exclude `SGM_Parts_Trend_Summary_*.html`)
+   - Read each and extract: period, Total Cost, weekly trend table (week label + per-unit costs + row total), unit totals, top 10 customers, top 10 parts by cost
+   - Order files chronologically by period start date
+   - Cross-check: weekly totals sum == Total Cost for each file (allow ±£0.02); note any discrepancy
+
+   **Weekly spend table** — columns: Week w/c | Unit 1 | Unit 3 | Unit 4 | Unit 5 | Unit 6 | Cust Care | Total Spend | vs Prior Week | Notes
+   - `vs Prior Week`: % change; class `up` (red) = positive, `down` (green) = negative, `neu` (muted) = first row
+   - Peak week row: `class="peak-row"` (background `#fffbe6`)
+   - Revised figures (week total differs between snapshots): show current figure, note the revision in Notes in orange italic (`class="revised"`)
+   - Partial weeks: flag in Notes column and footnote with symbols `*` `†` `‡`
+
+   **Trend Direction card** — place between the Weekly Spend table and the Standout Figures card:
+   - Split the period into two halves at the mid-point; exclude Easter weeks (4-day short weeks caused by bank holiday) from the second-half average
+   - Normalise all partial weeks to 5-day equivalents (`raw_spend / trading_days * 5`) before averaging
+   - Show a summary table: Half | Weeks Included | Avg Spend/Week | vs Other Half | Basis
+   - First half = baseline; second half % vs first half — `up` class if spend increased, `down` if decreased
+   - Three `dot-accent` bullet points below the table:
+     1. Overall verdict (up/down/flat) with the % change and any caveat about the opening week being atypical
+     2. Comment on the most recent partial week: state the raw figure, trading days, normalised projection, and whether it would be a high/low/average week
+     3. Underlying run rate: state the typical weekly range excluding the opening peak and Easter
+
+   **Remaining cards (in order):**
+   - Headline card (one sentence: cumulative total, period, peak week, most recent full-week spend, unallocated % if >20%)
+   - Key Positives / Key Negatives (two-column): customer ranking moves, unit share shifts, new top-10 entries/exits vs previous snapshot
+   - Standout Figures: notable revisions, largest part movers, new top-10 parts, any unit recording an unusual week
+
+   **Save** as `SGM_Parts_Trend_Summary_[MonthFrom]-[MonthTo][Year].html` in `S:\SGMWindows\Customer Care\Reports\`
+   - Open at `http://localhost:8765/<trend-filename>.html`
 
 ---
 
 ## Why direct file reading (not DataBaseSearch.xlsm)
 
-Power Query in `DataBaseSearch.xlsm` reads formula cached values from source xlsx files. When files are modified by openpyxl (e.g. to fix sheet headers), openpyxl strips `<v>` cached value tags from formula cells. The affected columns are:
+Power Query reads formula cached values from source xlsx files. When files are modified by openpyxl, it strips `<v>` cached value tags from formula cells:
 
-- **Col L (Cost per item):** array formula `XLOOKUP(B2:B29,'.'!A,'.'!B,0)` — row 2 master cell cache is cleared; rows 3+ retain individual cached values
+- **Col L (Cost per item):** XLOOKUP array formula — row 2 master cell cache cleared by openpyxl; rows 3+ retain individual cached values
 - **Col M (Total Cost):** formula `=D*L` — all caches cleared
 
-Power Query evaluates `D*L` at refresh time but returns null when the XLOOKUP master cache (L2) is empty, even if individual L3+ cells are present. Reading directly with `openpyxl data_only=True` bypasses this and the three-tier fallback recovers all costs correctly.
-
-**Affected files (2026):** `Parts List - 23.02.26.xlsx` and `Parts List - 10.03.26.xlsx` through `Parts List - 24.03.26.xlsx` (excluding 25.03.26). These were modified to fix a `Customercare Office` sheet header issue.
-
----
-
-## Style reference
-
-Canonical style: `C:\Users\Darren\Downloads\Parts_Top10_Report_Mar2026.html`
-Match its CSS variables, card layout, table structure, and rank badge colours exactly.
+Power Query returns null when the XLOOKUP master cache (L2) is empty. Reading directly with `openpyxl data_only=True` plus the three-tier cost fallback recovers all costs correctly.
 
 ---
 
@@ -138,9 +169,9 @@ Match its CSS variables, card layout, table structure, and rank badge colours ex
 
 Benchmark figures are stored in memory (`memory/parts_report_benchmarks.md`) and updated after each run. Always compare a new run against the most recent benchmark — flag any unit that drops >20% without a known reason.
 
-**Latest benchmark — 25 Mar 2026, period 06 Feb – 24 Mar 2026:**
-- Total Cost: £6,912.41 | Unallocated: £1,556.18 (22.5%)
-- Unit 6: £2,678.18 (38.7%) | Unit 5: £2,106.42 (30.5%) | Unit 4: £1,123.86 (16.3%)
-- Unit 3: £438.56 (6.3%) | Customer Care: £317.12 (4.6%) | Unit 1: £248.26 (3.6%)
+**Latest benchmark — 22 Apr 2026, period 09 Feb – 22 Apr 2026:**
+- Total Cost: £10,118.98 | Unallocated: £2,418.02 (23.9%)
+- Unit 6: £3,559.84 (35.2%) | Unit 5: £3,245.85 (32.1%) | Unit 4: £1,677.00 (16.6%)
+- Unit 3: £757.29 (7.5%) | Unit 1: £496.43 (4.9%) | Customer Care: £382.57 (3.8%)
 
-**KPI cards shown:** Total Cost and Unallocated Cost only (Transactions, Customers Served, Unique Parts removed).
+**KPI cards shown:** Total Cost and Unallocated Cost only.
